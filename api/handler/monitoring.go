@@ -3,10 +3,10 @@ package handler
 import (
 	"context"
 
-	"github.com/minguu42/zonda/api/oapi"
+	"github.com/minguu42/zonda/lib/go/zondaapi"
 )
 
-func (h *handler) CheckHealth(_ context.Context) (*oapi.CheckHealthOK, error) {
+func (h *handler) CheckHealth(_ context.Context) (*zondaapi.CheckHealthOK, error) {
 	out := h.monitoring.CheckHealth()
-	return &oapi.CheckHealthOK{Revision: out.Revision}, nil
+	return &zondaapi.CheckHealthOK{Revision: out.Revision}, nil
 }

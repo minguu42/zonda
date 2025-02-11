@@ -40,7 +40,7 @@ func mainRun(ctx context.Context) error {
 	}()
 
 	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
+	signal.Notify(quit, syscall.SIGTERM)
 	select {
 	case err := <-serveErr:
 		return fmt.Errorf("failed to listen and serve: %w", err)

@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/minguu42/zonda/api/oapi"
 	"github.com/minguu42/zonda/api/usecase"
+	"github.com/minguu42/zonda/lib/go/zondaapi"
 )
 
 type handler struct {
@@ -12,5 +12,5 @@ type handler struct {
 }
 
 func New() (http.Handler, error) {
-	return oapi.NewServer(&handler{monitoring: usecase.Monitoring{}})
+	return zondaapi.NewServer(&handler{monitoring: usecase.Monitoring{}})
 }

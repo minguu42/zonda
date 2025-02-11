@@ -7,7 +7,7 @@ setup: ## 開発に必要なツールをインストールする
 	go install github.com/ogen-go/ogen/cmd/ogen@latest
 
 gen: ## コードを生成する
-	@ogen -clean -package oapi -target ./api/oapi ./api/openapi.yaml
+	@ogen -clean -package zondaapi -target ./lib/go/zondaapi ./api/openapi.yaml
 
 fmt: ## コードを整形する
 	@goimports -w .
