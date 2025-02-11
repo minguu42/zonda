@@ -1,0 +1,22 @@
+openapi: 3.0.3
+info:
+  title: Zonda API
+  version: 0.1.0
+paths:
+  /health:
+    get:
+      tags: [monitoring]
+      operationId: checkHealth
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  revision:
+                    type: string
+                required: [revision]
+tags:
+  - name: monitoring
