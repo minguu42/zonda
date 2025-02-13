@@ -3,13 +3,15 @@ package main
 import (
 	"context"
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"strconv"
 	"syscall"
-	"time"
 
 	"github.com/minguu42/zonda/api/applog"
+	"github.com/minguu42/zonda/api/config"
 	"github.com/minguu42/zonda/api/handler"
 )
 
@@ -22,15 +24,20 @@ func main() {
 }
 
 func mainRun(ctx context.Context) error {
+	conf, err := config.Load()
+	if err != nil {
+		return fmt.Errorf("failed to load config: %w", err)
+	}
+
 	h, err := handler.New()
 	if err != nil {
 		return fmt.Errorf("failed to create handler: %w", err)
 	}
 	s := &http.Server{
-		Addr:              ":8080",
-		Handler:           h,
-		ReadTimeout:       2 * time.Second,
-		ReadHeaderTimeout: 2 * time.Second,
+		Addr:         net.JoinHostPort(conf.API.Host, strconv.Itoa(conf.API.Port)),
+		Handler:      h,
+		ReadTimeout:  conf.API.ReadTimeout,
+		WriteTimeout: conf.API.WriteTimeout,
 	}
 
 	serveErr := make(chan error)
@@ -39,15 +46,17 @@ func mainRun(ctx context.Context) error {
 		serveErr <- s.ListenAndServe()
 	}()
 
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGTERM)
+	sigterm := make(chan os.Signal, 1)
+	signal.Notify(sigterm, syscall.SIGTERM)
 	select {
 	case err := <-serveErr:
 		return fmt.Errorf("failed to listen and serve: %w", err)
-	case <-quit:
+	case <-sigterm:
 	}
 
-	if err := s.Shutdown(ctx); err != nil {
+	ctxWithTimeout, cancel := context.WithTimeout(ctx, conf.API.StopTimeout)
+	defer cancel()
+	if err := s.Shutdown(ctxWithTimeout); err != nil {
 		return fmt.Errorf("failed to shutdown server: %w", err)
 	}
 	applog.Event(ctx, "Stop accepting requests")
