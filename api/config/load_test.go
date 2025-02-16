@@ -10,7 +10,7 @@ import (
 )
 
 func TestLoad(t *testing.T) {
-	want := config.Config{
+	want := &config.Config{
 		API: config.API{
 			Host:         "0.0.0.0",
 			Port:         8080,
