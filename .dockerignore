@@ -1,0 +1,13 @@
+.dockerignore
+.gitignore
+.idea/
+.ogen.yaml
+.vscode/
+api/Dockerfile
+Makefile
+compose.yaml
+infra/
+staticcheck.conf
+
+# Goアプリケーションがリビジョン（コミットログ）を取得するのに使用するため、無視しない
+# .git/

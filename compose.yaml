@@ -3,18 +3,26 @@ services:
     image: zonda-api-dev
     build:
       context: .
+      dockerfile: ./api/Dockerfile
       target: local
     container_name: zonda-api
     env_file: .env
     environment:
       USE_DEBUG_LOGGER: true
-    tty: true
     ports:
       - "8080:8080"
-    volumes:
-      - .:/go/src/myapp
     depends_on:
       - db
+    develop:
+      watch:
+        - action: rebuild
+          path: go.mod
+          target: /go/src/myapp/go.mod
+        - action: sync+restart
+          path: .
+          ignore:
+            - .git
+          target: /go/src/myapp
   db:
     image: mysql:8.0.28
     platform: linux/amd64 # linux/arm64/v8が存在しないため
