@@ -1,15 +1,15 @@
 FROM golang:1.23.3 AS local
 WORKDIR /go/src/myapp
 
-RUN go install github.com/air-verse/air@latest
-
 RUN --mount=type=bind,source=go.mod,target=go.mod \
     --mount=type=bind,source=go.sum,target=go.sum \
     go mod download
 
-CMD ["air", "-c", ".air.toml"]
+COPY . .
 
-FROM golang:1.23.2 AS build
+CMD ["bash", "-c", "CGO_ENABLED=0 go build -ldflags \"-s -w\" -trimpath -o /go/bin/myapp ./api && /go/bin/myapp"]
+
+FROM golang:1.23.3 AS build
 WORKDIR /go/src/myapp
 
 RUN --mount=type=cache,target=/go/pkg/mod/ \
