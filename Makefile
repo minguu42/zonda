@@ -1,20 +1,15 @@
 .DEFAULT_GOAL := help
-.PHONY: setup gen fmt lint help
-
-setup: ## 開発に必要なツールをインストールする
-	go install honnef.co/go/tools/cmd/staticcheck@latest
-	go install golang.org/x/tools/cmd/goimports@latest
-	go install github.com/ogen-go/ogen/cmd/ogen@latest
+.PHONY: gen fmt lint help
 
 gen: ## コードを生成する
-	@ogen -clean -package zondaapi -target ./lib/go/zondaapi ./api/openapi.yaml
+	@go tool ogen -clean -package zondaapi -target ./lib/go/zondaapi ./api/openapi.yaml
 
 fmt: ## コードを整形する
-	@goimports -w .
+	@go tool goimports -w .
 
 lint: ## コードの静的解析を実装する
-	@go vet $$(go list ./... | grep -v -e /oapi)
-	@staticcheck $$(go list ./... | grep -v -e /oapi)
+	@go vet $$(go list ./... | grep -v -e /zondaapi)
+	@go tool staticcheck $$(go list ./... | grep -v -e /zondaapi)
 
 help: ## ヘルプを表示する
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(firstword $(MAKEFILE_LIST)) \
