@@ -1,5 +1,7 @@
 package main
 
+//go:generate go tool ogen -clean -config ../.ogen.yaml -package zondaapi -target ../lib/go/zondaapi ./openapi.yaml
+
 import (
 	"context"
 	"fmt"

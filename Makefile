@@ -2,7 +2,7 @@
 .PHONY: gen fmt lint help
 
 gen: ## コードを生成する
-	@go tool ogen -clean -package zondaapi -target ./lib/go/zondaapi ./api/openapi.yaml
+	@go generate ./...
 
 fmt: ## コードを整形する
 	@go tool goimports -w .
