@@ -12,6 +12,10 @@ type Handler interface {
 	//
 	// GET /health
 	CheckHealth(ctx context.Context) (*CheckHealthOK, error)
+	// SignUp implements signUp operation.
+	//
+	// POST /sign-up
+	SignUp(ctx context.Context, req *SignUpReq) (SignUpRes, error)
 }
 
 // Server implements http server based on OpenAPI v3 specification and
