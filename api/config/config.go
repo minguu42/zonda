@@ -7,9 +7,9 @@ type Config struct {
 }
 
 type API struct {
-	Host         string        `envconfig:"API_HOST" default:"0.0.0.0"`
-	Port         int           `envconfig:"API_PORT" default:"8080"`
-	ReadTimeout  time.Duration `envconfig:"API_READ_TIMEOUT" default:"2s"`
-	WriteTimeout time.Duration `envconfig:"API_WRITE_TIMEOUT" default:"2s"`
-	StopTimeout  time.Duration `envconfig:"API_STOP_TIMEOUT" default:"25s"`
+	Host         string        `env:"API_HOST" default:"0.0.0.0"`
+	Port         int           `env:"API_PORT" default:"8080"`
+	ReadTimeout  time.Duration `env:"API_READ_TIMEOUT" default:"2s"`
+	WriteTimeout time.Duration `env:"API_WRITE_TIMEOUT" default:"2s"`
+	StopTimeout  time.Duration `env:"API_STOP_TIMEOUT" default:"25s"`
 }
