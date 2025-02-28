@@ -5,7 +5,6 @@ go 1.24.0
 require (
 	github.com/go-faster/errors v0.7.1
 	github.com/go-faster/jx v1.1.0
-	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/ogen-go/ogen v1.10.0
 	github.com/oklog/ulid/v2 v2.1.0
 	github.com/stretchr/testify v1.10.0

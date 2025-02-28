@@ -26,8 +26,8 @@ func main() {
 }
 
 func mainRun(ctx context.Context) error {
-	conf, err := config.Load()
-	if err != nil {
+	var conf config.Config
+	if err := config.LoadEnv(&conf); err != nil {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
