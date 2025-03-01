@@ -11,11 +11,16 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
+	"time"
 
 	"github.com/minguu42/zonda/api/applog"
 	"github.com/minguu42/zonda/api/config"
 	"github.com/minguu42/zonda/api/handler"
 )
+
+func init() {
+	time.Local = time.FixedZone("JST", 9*60*60)
+}
 
 func main() {
 	ctx := context.Background()
