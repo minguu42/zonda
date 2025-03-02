@@ -15,6 +15,7 @@ import (
 
 	"github.com/minguu42/zonda/api/applog"
 	"github.com/minguu42/zonda/api/config"
+	"github.com/minguu42/zonda/api/factory"
 	"github.com/minguu42/zonda/api/handler"
 )
 
@@ -36,7 +37,13 @@ func mainRun(ctx context.Context) error {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
-	h, err := handler.New()
+	f, err := factory.New(&conf)
+	if err != nil {
+		return fmt.Errorf("failed to create factory: %w", err)
+	}
+	defer f.Close()
+
+	h, err := handler.New(f)
 	if err != nil {
 		return fmt.Errorf("failed to create handler: %w", err)
 	}
