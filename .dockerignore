@@ -2,6 +2,7 @@
 .gitignore
 .idea/
 .ogen.yaml
+.private/
 .vscode/
 api/Dockerfile
 Makefile
