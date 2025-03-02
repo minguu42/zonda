@@ -11,11 +11,17 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
+	"time"
 
 	"github.com/minguu42/zonda/api/applog"
 	"github.com/minguu42/zonda/api/config"
+	"github.com/minguu42/zonda/api/factory"
 	"github.com/minguu42/zonda/api/handler"
 )
+
+func init() {
+	time.Local = time.FixedZone("JST", 9*60*60)
+}
 
 func main() {
 	ctx := context.Background()
@@ -31,7 +37,13 @@ func mainRun(ctx context.Context) error {
 		return fmt.Errorf("failed to load config: %w", err)
 	}
 
-	h, err := handler.New()
+	f, err := factory.New(&conf)
+	if err != nil {
+		return fmt.Errorf("failed to create factory: %w", err)
+	}
+	defer f.Close()
+
+	h, err := handler.New(f)
 	if err != nil {
 		return fmt.Errorf("failed to create handler: %w", err)
 	}

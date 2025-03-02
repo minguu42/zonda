@@ -48,24 +48,60 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/health"
+		case '/': // Prefix: "/"
 			origElem := elem
-			if l := len("/health"); len(elem) >= l && elem[0:l] == "/health" {
+			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				// Leaf node.
-				switch r.Method {
-				case "GET":
-					s.handleCheckHealthRequest([0]string{}, elemIsEscaped, w, r)
-				default:
-					s.notAllowed(w, r, "GET")
+				break
+			}
+			switch elem[0] {
+			case 'h': // Prefix: "health"
+				origElem := elem
+				if l := len("health"); len(elem) >= l && elem[0:l] == "health" {
+					elem = elem[l:]
+				} else {
+					break
 				}
 
-				return
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "GET":
+						s.handleCheckHealthRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "GET")
+					}
+
+					return
+				}
+
+				elem = origElem
+			case 's': // Prefix: "sign-up"
+				origElem := elem
+				if l := len("sign-up"); len(elem) >= l && elem[0:l] == "sign-up" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleSignUpRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
+					}
+
+					return
+				}
+
+				elem = origElem
 			}
 
 			elem = origElem
@@ -149,28 +185,68 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 			break
 		}
 		switch elem[0] {
-		case '/': // Prefix: "/health"
+		case '/': // Prefix: "/"
 			origElem := elem
-			if l := len("/health"); len(elem) >= l && elem[0:l] == "/health" {
+			if l := len("/"); len(elem) >= l && elem[0:l] == "/" {
 				elem = elem[l:]
 			} else {
 				break
 			}
 
 			if len(elem) == 0 {
-				// Leaf node.
-				switch method {
-				case "GET":
-					r.name = CheckHealthOperation
-					r.summary = ""
-					r.operationID = "checkHealth"
-					r.pathPattern = "/health"
-					r.args = args
-					r.count = 0
-					return r, true
-				default:
-					return
+				break
+			}
+			switch elem[0] {
+			case 'h': // Prefix: "health"
+				origElem := elem
+				if l := len("health"); len(elem) >= l && elem[0:l] == "health" {
+					elem = elem[l:]
+				} else {
+					break
 				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "GET":
+						r.name = CheckHealthOperation
+						r.summary = ""
+						r.operationID = "checkHealth"
+						r.pathPattern = "/health"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
+				elem = origElem
+			case 's': // Prefix: "sign-up"
+				origElem := elem
+				if l := len("sign-up"); len(elem) >= l && elem[0:l] == "sign-up" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "POST":
+						r.name = SignUpOperation
+						r.summary = ""
+						r.operationID = "signUp"
+						r.pathPattern = "/sign-up"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
+				elem = origElem
 			}
 
 			elem = origElem
