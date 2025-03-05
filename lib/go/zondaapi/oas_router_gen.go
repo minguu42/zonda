@@ -81,24 +81,60 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 				elem = origElem
-			case 's': // Prefix: "sign-up"
+			case 's': // Prefix: "sign-"
 				origElem := elem
-				if l := len("sign-up"); len(elem) >= l && elem[0:l] == "sign-up" {
+				if l := len("sign-"); len(elem) >= l && elem[0:l] == "sign-" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
-					switch r.Method {
-					case "POST":
-						s.handleSignUpRequest([0]string{}, elemIsEscaped, w, r)
-					default:
-						s.notAllowed(w, r, "POST")
+					break
+				}
+				switch elem[0] {
+				case 'i': // Prefix: "in"
+					origElem := elem
+					if l := len("in"); len(elem) >= l && elem[0:l] == "in" {
+						elem = elem[l:]
+					} else {
+						break
 					}
 
-					return
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "POST":
+							s.handleSignInRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "POST")
+						}
+
+						return
+					}
+
+					elem = origElem
+				case 'u': // Prefix: "up"
+					origElem := elem
+					if l := len("up"); len(elem) >= l && elem[0:l] == "up" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch r.Method {
+						case "POST":
+							s.handleSignUpRequest([0]string{}, elemIsEscaped, w, r)
+						default:
+							s.notAllowed(w, r, "POST")
+						}
+
+						return
+					}
+
+					elem = origElem
 				}
 
 				elem = origElem
@@ -222,28 +258,68 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				}
 
 				elem = origElem
-			case 's': // Prefix: "sign-up"
+			case 's': // Prefix: "sign-"
 				origElem := elem
-				if l := len("sign-up"); len(elem) >= l && elem[0:l] == "sign-up" {
+				if l := len("sign-"); len(elem) >= l && elem[0:l] == "sign-" {
 					elem = elem[l:]
 				} else {
 					break
 				}
 
 				if len(elem) == 0 {
-					// Leaf node.
-					switch method {
-					case "POST":
-						r.name = SignUpOperation
-						r.summary = ""
-						r.operationID = "signUp"
-						r.pathPattern = "/sign-up"
-						r.args = args
-						r.count = 0
-						return r, true
-					default:
-						return
+					break
+				}
+				switch elem[0] {
+				case 'i': // Prefix: "in"
+					origElem := elem
+					if l := len("in"); len(elem) >= l && elem[0:l] == "in" {
+						elem = elem[l:]
+					} else {
+						break
 					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "POST":
+							r.name = SignInOperation
+							r.summary = ""
+							r.operationID = "signIn"
+							r.pathPattern = "/sign-in"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+					elem = origElem
+				case 'u': // Prefix: "up"
+					origElem := elem
+					if l := len("up"); len(elem) >= l && elem[0:l] == "up" {
+						elem = elem[l:]
+					} else {
+						break
+					}
+
+					if len(elem) == 0 {
+						// Leaf node.
+						switch method {
+						case "POST":
+							r.name = SignUpOperation
+							r.summary = ""
+							r.operationID = "signUp"
+							r.pathPattern = "/sign-up"
+							r.args = args
+							r.count = 0
+							return r, true
+						default:
+							return
+						}
+					}
+
+					elem = origElem
 				}
 
 				elem = origElem

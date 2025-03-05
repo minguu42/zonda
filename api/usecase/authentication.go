@@ -74,3 +74,37 @@ func (uc *Authentication) SignUp(ctx context.Context, in *SignUpInput) (*SignUpO
 		RefreshToken: refreshToken,
 	}, nil
 }
+
+type SignInInput struct {
+	Email    string
+	Password string
+}
+
+type SignInOutput struct {
+	AccessToken  string
+	RefreshToken string
+}
+
+func (uc *Authentication) SignIn(ctx context.Context, in *SignInInput) (*SignInOutput, error) {
+	user, err := uc.db.GetUserByEmail(ctx, in.Email)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	if bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(in.Password)) != nil {
+		return nil, errors.New("password is not valid")
+	}
+
+	accessToken, err := uc.auth.CreateAccessToken(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create access token: %w", err)
+	}
+	refreshToken, err := uc.auth.CreateRefreshToken(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create refresh token: %w", err)
+	}
+	return &SignInOutput{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
+}

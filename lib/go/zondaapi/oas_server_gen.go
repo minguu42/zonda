@@ -12,6 +12,10 @@ type Handler interface {
 	//
 	// GET /health
 	CheckHealth(ctx context.Context) (*CheckHealthOK, error)
+	// SignIn implements signIn operation.
+	//
+	// POST /sign-in
+	SignIn(ctx context.Context, req *SignInReq) (SignInRes, error)
 	// SignUp implements signUp operation.
 	//
 	// POST /sign-up
