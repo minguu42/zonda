@@ -21,3 +21,17 @@ func (h *handler) SignUp(ctx context.Context, req *zondaapi.SignUpReq) (zondaapi
 		RefreshToken: out.RefreshToken,
 	}, nil
 }
+
+func (h *handler) SignIn(ctx context.Context, req *zondaapi.SignInReq) (zondaapi.SignInRes, error) {
+	out, err := h.authentication.SignIn(ctx, &usecase.SignInInput{
+		Email:    req.Email,
+		Password: req.Password,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute SignIn usecase: %w", err)
+	}
+	return &zondaapi.SignInOK{
+		AccessToken:  out.AccessToken,
+		RefreshToken: out.RefreshToken,
+	}, nil
+}
