@@ -75,6 +75,40 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/error"
+  /refresh-token:
+    post:
+      tags: [authentication]
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+                  format: password
+              required: [refresh_token]
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  refresh_token:
+                    type: string
+                required: [access_token, refresh_token]
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
   /health:
     get:
       tags: [monitoring]

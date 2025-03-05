@@ -108,3 +108,36 @@ func (uc *Authentication) SignIn(ctx context.Context, in *SignInInput) (*SignInO
 		RefreshToken: refreshToken,
 	}, nil
 }
+
+type RefreshTokenInput struct {
+	RefreshToken string
+}
+
+type RefreshTokenOutput struct {
+	AccessToken  string
+	RefreshToken string
+}
+
+func (uc *Authentication) RefreshToken(ctx context.Context, in *RefreshTokenInput) (*RefreshTokenOutput, error) {
+	id, err := uc.auth.ExtractIDFromRefreshToken(in.RefreshToken)
+	if err != nil {
+		return nil, fmt.Errorf("failed to extract id from refresh token: %w", err)
+	}
+	user, err := uc.db.GetUserByID(ctx, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+
+	accessToken, err := uc.auth.CreateAccessToken(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create access token: %w", err)
+	}
+	refreshToken, err := uc.auth.CreateRefreshToken(ctx, user)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create refresh token: %w", err)
+	}
+	return &RefreshTokenOutput{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
+}
