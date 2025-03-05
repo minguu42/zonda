@@ -35,3 +35,16 @@ func (h *handler) SignIn(ctx context.Context, req *zondaapi.SignInReq) (zondaapi
 		RefreshToken: out.RefreshToken,
 	}, nil
 }
+
+func (h *handler) RefreshToken(ctx context.Context, req *zondaapi.RefreshTokenReq) (zondaapi.RefreshTokenRes, error) {
+	out, err := h.authentication.RefreshToken(ctx, &usecase.RefreshTokenInput{
+		RefreshToken: req.RefreshToken,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to execute RefreshToken usecase: %w", err)
+	}
+	return &zondaapi.RefreshTokenOK{
+		AccessToken:  out.AccessToken,
+		RefreshToken: out.RefreshToken,
+	}, nil
+}

@@ -42,6 +42,17 @@ func (c *Client) CreateUser(ctx context.Context, u *domain.User) error {
 	return nil
 }
 
+func (c *Client) GetUserByID(ctx context.Context, id domain.UserID) (*domain.User, error) {
+	var u User
+	if err := c.db(ctx).Where("id = ?", string(id)).Take(&u).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, ErrModelNotFound
+		}
+		return nil, fmt.Errorf("failed to get user: %w", err)
+	}
+	return u.Domain(), nil
+}
+
 func (c *Client) GetUserByEmail(ctx context.Context, email string) (*domain.User, error) {
 	var u User
 	if err := c.db(ctx).Where("email = ?", email).Take(&u).Error; err != nil {

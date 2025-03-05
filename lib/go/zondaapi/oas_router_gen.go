@@ -81,6 +81,27 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 
 				elem = origElem
+			case 'r': // Prefix: "refresh-token"
+				origElem := elem
+				if l := len("refresh-token"); len(elem) >= l && elem[0:l] == "refresh-token" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch r.Method {
+					case "POST":
+						s.handleRefreshTokenRequest([0]string{}, elemIsEscaped, w, r)
+					default:
+						s.notAllowed(w, r, "POST")
+					}
+
+					return
+				}
+
+				elem = origElem
 			case 's': // Prefix: "sign-"
 				origElem := elem
 				if l := len("sign-"); len(elem) >= l && elem[0:l] == "sign-" {
@@ -249,6 +270,31 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						r.summary = ""
 						r.operationID = "checkHealth"
 						r.pathPattern = "/health"
+						r.args = args
+						r.count = 0
+						return r, true
+					default:
+						return
+					}
+				}
+
+				elem = origElem
+			case 'r': // Prefix: "refresh-token"
+				origElem := elem
+				if l := len("refresh-token"); len(elem) >= l && elem[0:l] == "refresh-token" {
+					elem = elem[l:]
+				} else {
+					break
+				}
+
+				if len(elem) == 0 {
+					// Leaf node.
+					switch method {
+					case "POST":
+						r.name = RefreshTokenOperation
+						r.summary = ""
+						r.operationID = "refreshToken"
+						r.pathPattern = "/refresh-token"
 						r.args = args
 						r.count = 0
 						return r, true

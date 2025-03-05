@@ -12,6 +12,10 @@ type Handler interface {
 	//
 	// GET /health
 	CheckHealth(ctx context.Context) (*CheckHealthOK, error)
+	// RefreshToken implements refreshToken operation.
+	//
+	// POST /refresh-token
+	RefreshToken(ctx context.Context, req *RefreshTokenReq) (RefreshTokenRes, error)
 	// SignIn implements signIn operation.
 	//
 	// POST /sign-in

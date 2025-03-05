@@ -68,8 +68,50 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
-func (*ErrorStatusCode) signInRes() {}
-func (*ErrorStatusCode) signUpRes() {}
+func (*ErrorStatusCode) refreshTokenRes() {}
+func (*ErrorStatusCode) signInRes()       {}
+func (*ErrorStatusCode) signUpRes()       {}
+
+type RefreshTokenOK struct {
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
+// GetAccessToken returns the value of AccessToken.
+func (s *RefreshTokenOK) GetAccessToken() string {
+	return s.AccessToken
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *RefreshTokenOK) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// SetAccessToken sets the value of AccessToken.
+func (s *RefreshTokenOK) SetAccessToken(val string) {
+	s.AccessToken = val
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *RefreshTokenOK) SetRefreshToken(val string) {
+	s.RefreshToken = val
+}
+
+func (*RefreshTokenOK) refreshTokenRes() {}
+
+type RefreshTokenReq struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
+// GetRefreshToken returns the value of RefreshToken.
+func (s *RefreshTokenReq) GetRefreshToken() string {
+	return s.RefreshToken
+}
+
+// SetRefreshToken sets the value of RefreshToken.
+func (s *RefreshTokenReq) SetRefreshToken(val string) {
+	s.RefreshToken = val
+}
 
 type SignInOK struct {
 	AccessToken  string `json:"access_token"`
