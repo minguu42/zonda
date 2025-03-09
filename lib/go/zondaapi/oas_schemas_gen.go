@@ -2,6 +2,14 @@
 
 package zondaapi
 
+import (
+	"fmt"
+)
+
+func (s *ErrorStatusCode) Error() string {
+	return fmt.Sprintf("code %d: %+v", s.StatusCode, s.Response)
+}
+
 type CheckHealthOK struct {
 	Revision string `json:"revision"`
 }
@@ -18,12 +26,12 @@ func (s *CheckHealthOK) SetRevision(val string) {
 
 // Ref: #/components/schemas/error
 type Error struct {
-	Code    float64 `json:"code"`
-	Message string  `json:"message"`
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }
 
 // GetCode returns the value of Code.
-func (s *Error) GetCode() float64 {
+func (s *Error) GetCode() int {
 	return s.Code
 }
 
@@ -33,7 +41,7 @@ func (s *Error) GetMessage() string {
 }
 
 // SetCode sets the value of Code.
-func (s *Error) SetCode(val float64) {
+func (s *Error) SetCode(val int) {
 	s.Code = val
 }
 
@@ -68,10 +76,6 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
-func (*ErrorStatusCode) refreshTokenRes() {}
-func (*ErrorStatusCode) signInRes()       {}
-func (*ErrorStatusCode) signUpRes()       {}
-
 type RefreshTokenOK struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
@@ -96,8 +100,6 @@ func (s *RefreshTokenOK) SetAccessToken(val string) {
 func (s *RefreshTokenOK) SetRefreshToken(val string) {
 	s.RefreshToken = val
 }
-
-func (*RefreshTokenOK) refreshTokenRes() {}
 
 type RefreshTokenReq struct {
 	RefreshToken string `json:"refresh_token"`
@@ -137,8 +139,6 @@ func (s *SignInOK) SetAccessToken(val string) {
 func (s *SignInOK) SetRefreshToken(val string) {
 	s.RefreshToken = val
 }
-
-func (*SignInOK) signInRes() {}
 
 type SignInReq struct {
 	Email    string `json:"email"`
@@ -189,8 +189,6 @@ func (s *SignUpOK) SetAccessToken(val string) {
 func (s *SignUpOK) SetRefreshToken(val string) {
 	s.RefreshToken = val
 }
-
-func (*SignUpOK) signUpRes() {}
 
 type SignUpReq struct {
 	Email    string `json:"email"`

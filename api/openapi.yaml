@@ -124,13 +124,19 @@ paths:
                   revision:
                     type: string
                 required: [revision]
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
 components:
   schemas:
     error:
       type: object
       properties:
         code:
-          type: number
+          type: integer
         message:
           type: string
       required: [code, message]
