@@ -15,15 +15,19 @@ type Handler interface {
 	// RefreshToken implements refreshToken operation.
 	//
 	// POST /refresh-token
-	RefreshToken(ctx context.Context, req *RefreshTokenReq) (RefreshTokenRes, error)
+	RefreshToken(ctx context.Context, req *RefreshTokenReq) (*RefreshTokenOK, error)
 	// SignIn implements signIn operation.
 	//
 	// POST /sign-in
-	SignIn(ctx context.Context, req *SignInReq) (SignInRes, error)
+	SignIn(ctx context.Context, req *SignInReq) (*SignInOK, error)
 	// SignUp implements signUp operation.
 	//
 	// POST /sign-up
-	SignUp(ctx context.Context, req *SignUpReq) (SignUpRes, error)
+	SignUp(ctx context.Context, req *SignUpReq) (*SignUpOK, error)
+	// NewError creates *ErrorStatusCode from error returned by handler.
+	//
+	// Used for common default response.
+	NewError(ctx context.Context, err error) *ErrorStatusCode
 }
 
 // Server implements http server based on OpenAPI v3 specification and

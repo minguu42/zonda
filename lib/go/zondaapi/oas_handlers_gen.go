@@ -71,8 +71,19 @@ func (s *Server) handleCheckHealthRequest(args [0]string, argsEscaped bool, w ht
 		response, err = s.h.CheckHealth(ctx)
 	}
 	if err != nil {
-		defer recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w); err != nil {
+			defer recordError("Internal", err)
+		}
 		return
 	}
 
@@ -116,7 +127,7 @@ func (s *Server) handleRefreshTokenRequest(args [0]string, argsEscaped bool, w h
 		}
 	}()
 
-	var response RefreshTokenRes
+	var response *RefreshTokenOK
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -131,7 +142,7 @@ func (s *Server) handleRefreshTokenRequest(args [0]string, argsEscaped bool, w h
 		type (
 			Request  = *RefreshTokenReq
 			Params   = struct{}
-			Response = RefreshTokenRes
+			Response = *RefreshTokenOK
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -150,8 +161,19 @@ func (s *Server) handleRefreshTokenRequest(args [0]string, argsEscaped bool, w h
 		response, err = s.h.RefreshToken(ctx, request)
 	}
 	if err != nil {
-		defer recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w); err != nil {
+			defer recordError("Internal", err)
+		}
 		return
 	}
 
@@ -195,7 +217,7 @@ func (s *Server) handleSignInRequest(args [0]string, argsEscaped bool, w http.Re
 		}
 	}()
 
-	var response SignInRes
+	var response *SignInOK
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -210,7 +232,7 @@ func (s *Server) handleSignInRequest(args [0]string, argsEscaped bool, w http.Re
 		type (
 			Request  = *SignInReq
 			Params   = struct{}
-			Response = SignInRes
+			Response = *SignInOK
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -229,8 +251,19 @@ func (s *Server) handleSignInRequest(args [0]string, argsEscaped bool, w http.Re
 		response, err = s.h.SignIn(ctx, request)
 	}
 	if err != nil {
-		defer recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w); err != nil {
+			defer recordError("Internal", err)
+		}
 		return
 	}
 
@@ -274,7 +307,7 @@ func (s *Server) handleSignUpRequest(args [0]string, argsEscaped bool, w http.Re
 		}
 	}()
 
-	var response SignUpRes
+	var response *SignUpOK
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
@@ -289,7 +322,7 @@ func (s *Server) handleSignUpRequest(args [0]string, argsEscaped bool, w http.Re
 		type (
 			Request  = *SignUpReq
 			Params   = struct{}
-			Response = SignUpRes
+			Response = *SignUpOK
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -308,8 +341,19 @@ func (s *Server) handleSignUpRequest(args [0]string, argsEscaped bool, w http.Re
 		response, err = s.h.SignUp(ctx, request)
 	}
 	if err != nil {
-		defer recordError("Internal", err)
-		s.cfg.ErrorHandler(ctx, w, r, err)
+		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
+			if err := encodeErrorResponse(errRes, w); err != nil {
+				defer recordError("Internal", err)
+			}
+			return
+		}
+		if errors.Is(err, ht.ErrNotImplemented) {
+			s.cfg.ErrorHandler(ctx, w, r, err)
+			return
+		}
+		if err := encodeErrorResponse(s.h.NewError(ctx, err), w); err != nil {
+			defer recordError("Internal", err)
+		}
 		return
 	}
 
