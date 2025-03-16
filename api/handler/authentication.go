@@ -8,7 +8,7 @@ import (
 	"github.com/minguu42/zonda/lib/go/zondaapi"
 )
 
-func (h *handler) SignUp(ctx context.Context, req *zondaapi.SignUpReq) (zondaapi.SignUpRes, error) {
+func (h *handler) SignUp(ctx context.Context, req *zondaapi.SignUpReq) (*zondaapi.SignUpOK, error) {
 	out, err := h.authentication.SignUp(ctx, &usecase.SignUpInput{
 		Email:    req.Email,
 		Password: req.Password,
@@ -22,7 +22,7 @@ func (h *handler) SignUp(ctx context.Context, req *zondaapi.SignUpReq) (zondaapi
 	}, nil
 }
 
-func (h *handler) SignIn(ctx context.Context, req *zondaapi.SignInReq) (zondaapi.SignInRes, error) {
+func (h *handler) SignIn(ctx context.Context, req *zondaapi.SignInReq) (*zondaapi.SignInOK, error) {
 	out, err := h.authentication.SignIn(ctx, &usecase.SignInInput{
 		Email:    req.Email,
 		Password: req.Password,
@@ -36,7 +36,7 @@ func (h *handler) SignIn(ctx context.Context, req *zondaapi.SignInReq) (zondaapi
 	}, nil
 }
 
-func (h *handler) RefreshToken(ctx context.Context, req *zondaapi.RefreshTokenReq) (zondaapi.RefreshTokenRes, error) {
+func (h *handler) RefreshToken(ctx context.Context, req *zondaapi.RefreshTokenReq) (*zondaapi.RefreshTokenOK, error) {
 	out, err := h.authentication.RefreshToken(ctx, &usecase.RefreshTokenInput{
 		RefreshToken: req.RefreshToken,
 	})
