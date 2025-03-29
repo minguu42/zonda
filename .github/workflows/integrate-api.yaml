@@ -28,6 +28,24 @@ jobs:
           go-version-file: go.mod
       - name: Check code format
         run: if [ $(go tool goimports -l ./api ./lib/go | wc -l) -gt 0 ]; then exit 1; fi
+  check-generated-code:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Generate code
+        run: go generate ./api/... ./lib/go/...
+      - name: Check for changes
+        run: |
+          git add -N .
+          git diff --exit-code
   lint:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 5
