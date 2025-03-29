@@ -130,6 +130,26 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/error"
+  /example:
+    get:
+      operationId: testCI
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  revision:
+                    type: string
+                required: [revision]
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/error"
 components:
   schemas:
     error:
