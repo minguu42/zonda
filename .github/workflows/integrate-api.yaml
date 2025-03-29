@@ -14,7 +14,7 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  check-format:
+  check-code-format:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 5
     steps:
@@ -26,8 +26,10 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - name: Check code format
-        run: if [ $(go tool goimports -l ./api ./lib/go | wc -l) -gt 0 ]; then exit 1; fi
+      - name: Format code
+        run: go tool goimports -w ./api ./lib/go
+      - name: Check for changes
+        run: git diff --exit-code
   check-generated-code:
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 5
